@@ -1,0 +1,9 @@
+# virtual_regexp
+# This file will change email to address using regular expression
+#
+# Un-comment this line to send all email to one email address
+# Then execute:
+#    postmap /etc/postfix/virtual_regexp
+#    systemctl restart postfix.service
+#
+# /.+@.+/ catchall@example.com

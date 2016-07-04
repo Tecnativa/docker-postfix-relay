@@ -1,0 +1,9 @@
+# virtual
+# This file will change email to address
+#
+# Add one line per email to address to change
+# Then execute:
+#    postmap /etc/postfix/virtual
+#    systemctl restart postfix.service
+#
+# TO_ADDRESS    CHANGED_TO_ADDRESS
