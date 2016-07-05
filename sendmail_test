@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sed -e
+set -e
 
 user=test
 from_name='Test'

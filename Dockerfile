@@ -22,31 +22,31 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     echo "postfix postfix/mailname string $MAILNAME" | debconf-set-selections && \
     echo "postfix postfix/main_mailer_type string 'Internet Site'" | debconf-set-selections && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y postfix rsyslog
-
-RUN postconf -e smtp_tls_security_level=may && \
-    postconf -e smtp_sasl_auth_enable=yes && \
-    postconf -e smtp_sasl_password_maps=hash:/etc/postfix/sasl_passwd && \
-    postconf -e smtp_sasl_security_options=noanonymous && \
-    postconf -e myhostname=$HOST && \
-    postconf -e mydomain=$DOMAIN && \
-    postconf -e mydestination=localhost && \
-    postconf -e mynetworks='127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128' && \
-    postconf -e inet_interfaces=loopback-only && \
-    postconf -e smtp_helo_name=\$myhostname.\$mydomain && \
-    postconf -e virtual_maps='hash:/etc/postfix/virtual, regexp:/etc/postfix/virtual_regexp' && \
-    postconf -e sender_canonical_maps=regexp:/etc/postfix/sender_canonical_regexp
+    apt-get install -y postfix rsyslog && \
+    apt-get clean -y && apt-get autoclean -y && apt-get autoremove -y
 
 ADD postfix /etc/postfix
+ADD entrypoint sendmail_test /usr/local/bin/
 
-RUN postmap /etc/postfix/sasl_passwd && \
-    postmap /etc/postfix/virtual_regexp && \
-    postmap /etc/postfix/virtual && \
-    postmap /etc/postfix/sender_canonical_regexp
-
-ADD entrypoint test /usr/local/bin/
-RUN chmod a+rx /usr/local/bin/*
+RUN chmod a+rx /usr/local/bin/* && \
+    /usr/sbin/postconf -e smtp_tls_security_level=may && \
+    /usr/sbin/postconf -e smtp_sasl_auth_enable=yes && \
+    /usr/sbin/postconf -e smtp_sasl_password_maps=hash:/etc/postfix/sasl_passwd && \
+    /usr/sbin/postconf -e smtp_sasl_security_options=noanonymous && \
+    /usr/sbin/postconf -e myhostname=$HOST && \
+    /usr/sbin/postconf -e mydomain=$DOMAIN && \
+    /usr/sbin/postconf -e mydestination=localhost && \
+    /usr/sbin/postconf -e mynetworks='127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128' && \
+    /usr/sbin/postconf -e inet_interfaces=loopback-only && \
+    /usr/sbin/postconf -e smtp_helo_name=\$myhostname.\$mydomain && \
+    /usr/sbin/postconf -e virtual_maps='hash:/etc/postfix/virtual, regexp:/etc/postfix/virtual_regexp' && \
+    /usr/sbin/postconf -e sender_canonical_maps=regexp:/etc/postfix/sender_canonical_regexp && \
+    /usr/sbin/postmap /etc/postfix/sasl_passwd && \
+    /usr/sbin/postmap /etc/postfix/virtual_regexp && \
+    /usr/sbin/postmap /etc/postfix/virtual && \
+    /usr/sbin/postmap /etc/postfix/sender_canonical_regexp
 
 ENTRYPOINT ["/usr/local/bin/entrypoint"]
 # CMD ["tail", "-f", "/var/log/syslog"]
-CMD ["bash"]
+CMD ["sleep", "infinity"]
+# CMD ["bash"]
