@@ -22,7 +22,7 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     echo "postfix postfix/mailname string $MAILNAME" | debconf-set-selections && \
     echo "postfix postfix/main_mailer_type string 'Internet Site'" | debconf-set-selections && \
-    apt-get install -y postfix rsyslog && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y postfix rsyslog && \
     apt-get clean -y && apt-get autoclean -y && apt-get autoremove -y
 
 ADD postfix /etc/postfix

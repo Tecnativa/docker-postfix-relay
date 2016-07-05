@@ -31,7 +31,7 @@ fi
 # Define some virtual email_to addresses
 if [ -n "$MAIL_VIRTUAL_DEFAULT" ] && [ -n "$MAIL_VIRTUAL_ADDRESSES" ]; then
     for addr in $MAIL_VIRTUAL_ADDRESSES; do
-        echo "addr $MAIL_VIRTUAL_DEFAULT" >> /etc/postfix/virtual
+        echo "$addr $MAIL_VIRTUAL_DEFAULT" >> /etc/postfix/virtual
     done
     /usr/sbin/postmap /etc/postfix/virtual
 fi
@@ -58,7 +58,6 @@ fi
 /etc/init.d/rsyslog start
 
 # Start Postfix daemon
-/usr/sbin/postfix stop
-/usr/sbin/postfix start
+/etc/init.d/postfix restart
 
 exec $@

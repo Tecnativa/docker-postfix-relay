@@ -14,6 +14,7 @@ if [ -z "$from_email" ] || [ -z "$to_email" ]; then
     exit 1
 fi
 
+echo -n "Preparing email ... "
 cat > $file << EOL
 Subject: Email test for $HOST.$DOMAIN
 From: $from_name <$from_email>
@@ -25,8 +26,23 @@ You do not have to do anything, but remove it.
 Thanks
 
 EOL
+echo "OK"
 
+echo -n "Sending email using sendmail ... "
 sendmail -f $user $to_email < $file
+error=$?; if [ $error -ne 0 ]; then echo "ERROR: $error"; exit $error; fi
+echo "OK"
+
+echo -n "Waiting some seconds ... "
 sleep 5
+echo "OK"
+
+echo "-----------------------------------------------------"
+echo " Log"
+echo "-----------------------------------------------------"
 tail /var/log/syslog
+
+echo "-----------------------------------------------------"
+echo " Outgoing email queue"
+echo "-----------------------------------------------------"
 postqueue -p
