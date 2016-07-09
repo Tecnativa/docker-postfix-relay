@@ -2,13 +2,6 @@
 
 set -e
 
-_stop() {
-    /etc/init.d/postfix stop
-    /etc/init.d/rsyslog stop
-}
-
-trap "_stop" SIGINT SIGTERM SIGHUP
-
 _add_line() {
     local check="$1"
     local line="$2"
@@ -17,6 +10,25 @@ _add_line() {
         echo "$line" >> "$file"
     fi
 }
+
+_log() {
+    if [ ! -f /var/log/mail.log ]; then
+        touch /var/log/mail.log
+        chown syslog:adm /var/log/mail.log
+        chmod 640 /var/log/mail.log
+    fi
+    echo "$(date '+%b %e %H:%I:%S') $(hostname) entrypoint[$$]: $1" >> /var/log/mail.log
+}
+
+_stop() {
+    /etc/init.d/postfix stop
+    /etc/init.d/rsyslog stop
+    _log "Docker entrypoint stop"
+}
+
+trap "_stop" SIGINT SIGTERM SIGHUP
+
+_log "Docker entrypoint start"
 
 if [ -n "$HOST" ]; then /usr/sbin/postconf -e myhostname=$HOST; fi
 if [ -n "$DOMAIN" ]; then /usr/sbin/postconf -e mydomain=$DOMAIN; fi
@@ -65,15 +77,12 @@ if [ -n "$MAIL_NON_CANONICAL_DEFAULT" ]; then
     /usr/sbin/postmap /etc/postfix/sender_canonical_regexp
 fi
 
+_log "Docker entrypoint configured"
+
 # Start syslog daemon
 /etc/init.d/rsyslog start
 
 # Start Postfix daemon
 /etc/init.d/postfix start
-
-while [ ! -f /var/log/mail.log ]; do
-    echo "Waiting for mail log available"
-    sleep 1
-done
 
 $@ & wait ${!}
