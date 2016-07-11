@@ -49,3 +49,4 @@ RUN chmod a+rx /usr/local/bin/* && \
 
 ENTRYPOINT ["/usr/local/bin/entrypoint"]
 CMD ["tail", "-f", "/var/log/mail.log"]
+VOLUME ["/var/log"]
