@@ -23,7 +23,8 @@ RUN apt-get update && \
     echo "postfix postfix/mailname string $MAILNAME" | debconf-set-selections && \
     echo "postfix postfix/main_mailer_type string 'Internet Site'" | debconf-set-selections && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y postfix rsyslog iproute2 && \
-    apt-get clean -y && apt-get autoclean -y && apt-get autoremove -y
+    apt-get clean -y && apt-get autoclean -y && apt-get autoremove -y && \
+    rm -rf /var/cache/apt/archives/* /var/cache/apt/*.bin /var/lib/apt/lists/*
 
 ADD postfix /etc/postfix
 ADD entrypoint sendmail_test /usr/local/bin/
