@@ -2,6 +2,7 @@ FROM ubuntu:16.04
 
 MAINTAINER antespi@gmail.com
 
+VOLUME ["/var/log", "/var/spool/postfix"]
 EXPOSE 25
 
 ENV HOST=localhost \
@@ -50,4 +51,3 @@ RUN chmod a+rx /usr/local/bin/* && \
 
 ENTRYPOINT ["/usr/local/bin/entrypoint"]
 CMD ["tail", "-f", "/var/log/mail.log"]
-VOLUME ["/var/log", "/var/spool/postfix"]
