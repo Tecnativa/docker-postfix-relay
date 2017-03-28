@@ -53,6 +53,12 @@ if [ -n "$MAIL_RELAY_HOST" ] && [ -n "$MAIL_RELAY_USER" ] && [ -n "$MAIL_RELAY_P
     /usr/sbin/postmap /etc/postfix/sasl_passwd
 fi
 
+# Configure SMTPS wrapping if port is 465
+if [ "$MAIL_RELAY_PORT" == "465" ]; then
+    /usr/sbin/postconf -e smtp_tls_wrappermode=yes
+    /usr/sbin/postconf -e smtp_tls_security_level=encrypt
+fi
+
 # Force to send all emails to one email address
 if [ -n "$MAIL_VIRTUAL_FORCE_TO" ]; then
     _add_line "$MAIL_VIRTUAL_FORCE_TO" "/.+@.+/ $MAIL_VIRTUAL_FORCE_TO" /etc/postfix/virtual_regexp
