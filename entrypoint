@@ -15,7 +15,6 @@ _log() {
     local logfile=/var/log/mail.log
     if [ ! -f $logfile ]; then
         touch $logfile
-        chown syslog:adm $logfile
         chmod 640 $logfile
     fi
     echo "$(date '+%b %e %H:%I:%S') $(hostname) entrypoint[$$]: $1" >> $logfile

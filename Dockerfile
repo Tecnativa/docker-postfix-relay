@@ -1,6 +1,4 @@
-FROM ubuntu:16.04
-
-MAINTAINER antespi@gmail.com
+FROM debian:9
 
 VOLUME ["/var/log", "/var/spool/postfix"]
 EXPOSE 25
@@ -20,11 +18,13 @@ ENV HOST=localhost \
     MAIL_NON_CANONICAL_DEFAULT=''
 
 RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get upgrade -y && \
+    apt-get upgrade -yqq && \
     echo "postfix postfix/mailname string $MAILNAME" | debconf-set-selections && \
     echo "postfix postfix/main_mailer_type string 'Internet Site'" | debconf-set-selections && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y postfix rsyslog iproute2 && \
-    apt-get clean -y && apt-get autoclean -y && apt-get autoremove -y && \
+    apt-get install -yqq postfix rsyslog iproute2 && \
+    apt-get clean -yqq && \
+    apt-get autoclean -yqq && \
+    apt-get autoremove -yqq && \
     rm -rf /var/cache/apt/archives/* /var/cache/apt/*.bin /var/lib/apt/lists/*
 
 ADD postfix /etc/postfix
