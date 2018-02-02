@@ -40,6 +40,11 @@ if [ -n "$HOST" ]; then /usr/sbin/postconf -e myhostname=$HOST; fi
 if [ -n "$DOMAIN" ]; then /usr/sbin/postconf -e mydomain=$DOMAIN; fi
 if [ -n "$MAILNAME" ]; then echo $MAILNAME > /etc/mailname; fi
 
+# Email size limits
+if [ -n "$MESSAGE_SIZE_LIMIT" ]; then
+    /usr/sbin/postconf -e message_size_limit=$MESSAGE_SIZE_LIMIT
+fi
+
 # Mail relay host
 if [ -n "$MAIL_RELAY_HOST" ] && [ -z "$MAIL_RELAY_PORT" ]; then
     /usr/sbin/postconf -e relayhost=$MAIL_RELAY_HOST;

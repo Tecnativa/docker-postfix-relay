@@ -15,7 +15,8 @@ ENV HOST=localhost \
     MAIL_VIRTUAL_DEFAULT='' \
     MAIL_CANONICAL_DOMAINS='' \
     MAIL_NON_CANONICAL_PREFIX='' \
-    MAIL_NON_CANONICAL_DEFAULT=''
+    MAIL_NON_CANONICAL_DEFAULT='' \
+    MESSAGE_SIZE_LIMIT=26214400
 
 RUN apt-get update && \
     apt-get upgrade -yqq && \
