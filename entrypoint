@@ -94,6 +94,9 @@ if [ -n "$MAIL_NON_CANONICAL_DEFAULT" ]; then
     /usr/sbin/postmap /etc/postfix/sender_canonical_regexp
 fi
 
+# Make sure no permission problems happen
+/usr/sbin/postfix set-permissions
+
 _log "Docker entrypoint configured"
 
 # Start syslog daemon
