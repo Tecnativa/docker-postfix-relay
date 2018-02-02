@@ -1,4 +1,6 @@
-# Dockerized SMTP relay
+# [Dockerized SMTP relay](https://hub.docker.com/r/tecnativa/postfix-relay)
+
+[![Docker Automated build](https://img.shields.io/docker/automated/tecnativa/postfix-relay.svg)](https://hub.docker.com/r/tecnativa/postfix-relay/)
 
 ## What?
 
