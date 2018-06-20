@@ -30,11 +30,7 @@ trap "_stop" SIGINT SIGTERM SIGHUP
 
 _log "Docker entrypoint start"
 
-routes=$(ip route | grep -v default | cut -d' ' -f1)
-if [ -n "$routes" ]; then
-    /usr/sbin/postconf -e mynetworks="127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128 $routes"
-    /usr/sbin/postconf -e inet_interfaces=all
-fi
+postconf -e "inet_protocols=$INET_PROTOCOLS"
 
 if [ -n "$HOST" ]; then /usr/sbin/postconf -e myhostname=$HOST; fi
 if [ -n "$DOMAIN" ]; then /usr/sbin/postconf -e mydomain=$DOMAIN; fi

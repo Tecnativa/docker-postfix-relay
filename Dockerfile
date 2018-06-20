@@ -5,6 +5,7 @@ EXPOSE 25
 
 ENV HOST=localhost \
     DOMAIN=localdomain \
+    INET_PROTOCOLS=ipv4 \
     MAILNAME=localdomain \
     MAIL_RELAY_HOST='' \
     MAIL_RELAY_PORT='' \
