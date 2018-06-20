@@ -29,7 +29,7 @@ EOL
 echo "OK"
 
 echo -n "Sending email using sendmail ... "
-sendmail -f $user $to_email < $file
+sendmail -f "$from_email" "$to_email" < $file
 error=$?; if [ $error -ne 0 ]; then echo "ERROR: $error"; exit $error; fi
 echo "OK"
 
