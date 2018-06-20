@@ -31,38 +31,35 @@ trap "_stop" SIGINT SIGTERM SIGHUP
 _log "Docker entrypoint start"
 
 postconf -e "inet_protocols=$INET_PROTOCOLS"
-
-if [ -n "$HOST" ]; then /usr/sbin/postconf -e myhostname=$HOST; fi
-if [ -n "$DOMAIN" ]; then /usr/sbin/postconf -e mydomain=$DOMAIN; fi
-if [ -n "$MAILNAME" ]; then echo $MAILNAME > /etc/mailname; fi
+postconf -e "myhostname=$HOST"
+postconf -e "mydomain=$DOMAIN"
+echo $MAILNAME > /etc/mailname
 
 # Email size limits
-if [ -n "$MESSAGE_SIZE_LIMIT" ]; then
-    /usr/sbin/postconf -e message_size_limit=$MESSAGE_SIZE_LIMIT
-fi
+postconf -e message_size_limit=$MESSAGE_SIZE_LIMIT
 
 # Mail relay host
 if [ -n "$MAIL_RELAY_HOST" ] && [ -z "$MAIL_RELAY_PORT" ]; then
-    /usr/sbin/postconf -e relayhost=$MAIL_RELAY_HOST;
+    postconf -e relayhost=$MAIL_RELAY_HOST;
 fi
 if [ -n "$MAIL_RELAY_HOST" ] && [ -n "$MAIL_RELAY_PORT" ]; then
-    /usr/sbin/postconf -e relayhost="$MAIL_RELAY_HOST:$MAIL_RELAY_PORT";
+    postconf -e relayhost="$MAIL_RELAY_HOST:$MAIL_RELAY_PORT";
 fi
 if [ -n "$MAIL_RELAY_HOST" ] && [ -n "$MAIL_RELAY_USER" ] && [ -n "$MAIL_RELAY_PASS" ]; then
     _add_line "$MAIL_RELAY_HOST" "$MAIL_RELAY_HOST $MAIL_RELAY_USER:$MAIL_RELAY_PASS" /etc/postfix/sasl_passwd
-    /usr/sbin/postmap /etc/postfix/sasl_passwd
+    postmap /etc/postfix/sasl_passwd
 fi
 
 # Configure SMTPS wrapping if port is 465
 if [ "$MAIL_RELAY_PORT" == "465" ]; then
-    /usr/sbin/postconf -e smtp_tls_wrappermode=yes
-    /usr/sbin/postconf -e smtp_tls_security_level=encrypt
+    postconf -e smtp_tls_wrappermode=yes
+    postconf -e smtp_tls_security_level=encrypt
 fi
 
 # Force to send all emails to one email address
 if [ -n "$MAIL_VIRTUAL_FORCE_TO" ]; then
     _add_line "$MAIL_VIRTUAL_FORCE_TO" "/.+@.+/ $MAIL_VIRTUAL_FORCE_TO" /etc/postfix/virtual_regexp
-    /usr/sbin/postmap /etc/postfix/virtual_regexp
+    postmap /etc/postfix/virtual_regexp
 fi
 
 # Define some virtual email_to addresses
@@ -70,7 +67,7 @@ if [ -n "$MAIL_VIRTUAL_DEFAULT" ] && [ -n "$MAIL_VIRTUAL_ADDRESSES" ]; then
     for addr in $MAIL_VIRTUAL_ADDRESSES; do
         _add_line "$addr" "$addr $MAIL_VIRTUAL_DEFAULT" /etc/postfix/virtual
     done
-    /usr/sbin/postmap /etc/postfix/virtual
+    postmap /etc/postfix/virtual
 fi
 
 # Define canonical and non-canonical sender domain
@@ -78,7 +75,7 @@ if [ -n "$MAIL_CANONICAL_DOMAINS" ]; then
     for domain in $MAIL_CANONICAL_DOMAINS; do
         _add_line "{1}@$domain" "/^(.+)@${domain//\./\\.}$/ \${1}@$domain" /etc/postfix/sender_canonical_regexp
     done
-    /usr/sbin/postmap /etc/postfix/sender_canonical_regexp
+    postmap /etc/postfix/sender_canonical_regexp
 fi
 
 if [ -n "$MAIL_NON_CANONICAL_DEFAULT" ]; then
@@ -87,11 +84,11 @@ if [ -n "$MAIL_NON_CANONICAL_DEFAULT" ]; then
         prefix=$MAIL_NON_CANONICAL_PREFIX
     fi
     _add_line "{2}@$MAIL_NON_CANONICAL_DEFAULT" "/^(.+)@(.+)$/ $prefix\${1}-\${2}@$MAIL_NON_CANONICAL_DEFAULT" /etc/postfix/sender_canonical_regexp
-    /usr/sbin/postmap /etc/postfix/sender_canonical_regexp
+    postmap /etc/postfix/sender_canonical_regexp
 fi
 
 # Make sure no permission problems happen
-/usr/sbin/postfix set-permissions
+postfix set-permissions
 
 _log "Docker entrypoint configured"
 

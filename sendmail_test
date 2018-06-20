@@ -10,7 +10,7 @@ to_email=$2
 file=/tmp/emailtest.eml
 
 if [ -z "$from_email" ] || [ -z "$to_email" ]; then
-    echo "Usage: test <email_from> <email_to>"
+    echo "Usage: $(basename $0) <email_from> <email_to>"
     exit 1
 fi
 
