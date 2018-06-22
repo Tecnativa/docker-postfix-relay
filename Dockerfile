@@ -37,6 +37,7 @@ ADD postfix /etc/postfix
 ADD entrypoint sendmail_test /usr/local/bin/
 
 RUN chmod a+rx /usr/local/bin/* && \
+    postconf -e inet_interfaces=all \
     postconf -e smtp_tls_security_level=may && \
     postconf -e smtp_sasl_auth_enable=yes && \
     postconf -e smtp_sasl_password_maps=hash:/etc/postfix/sasl_passwd && \
