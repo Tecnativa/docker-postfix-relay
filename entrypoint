@@ -84,11 +84,7 @@ if [ -n "$MAIL_CANONICAL_DOMAINS" ]; then
 fi
 
 if [ -n "$MAIL_NON_CANONICAL_DEFAULT" ]; then
-    prefix='noreply+'
-    if [ -n "$MAIL_NON_CANONICAL_PREFIX" ]; then
-        prefix=$MAIL_NON_CANONICAL_PREFIX
-    fi
-    _add_line "{2}@$MAIL_NON_CANONICAL_DEFAULT" "/^(.+)@(.+)$/ $prefix\${1}-\${2}@$MAIL_NON_CANONICAL_DEFAULT" /etc/postfix/sender_canonical_regexp
+    _add_line "{2}@$MAIL_NON_CANONICAL_DEFAULT" "/^(.+)@(.+)$/ $MAIL_NON_CANONICAL_PREFIX\${1}-\${2}@$MAIL_NON_CANONICAL_DEFAULT" /etc/postfix/sender_canonical_regexp
     postmap /etc/postfix/sender_canonical_regexp
 fi
 
