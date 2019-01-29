@@ -22,13 +22,20 @@ network failures, and concentrate on its business.
 
 Configure through these environment variables:
 
-- `MAILNAME`
-- `MAIL_RELAY_HOST`
-- `MAIL_RELAY_PORT`
-- `MAIL_RELAY_USER`
-- `MAIL_RELAY_PASS`
-- `MAIL_CANONICAL_DOMAINS`
-- `MAIL_NON_CANONICAL_DEFAULT`
+- `MAILNAME`: The default host for cron job mails.
+- `MAIL_RELAY_HOST`: The real SMTP server (e.g. `smtp.mailgun.org`).
+- `MAIL_RELAY_PORT`: The port in `MAIL_RELAY_HOST`. Depending on the port,
+  a specific security configuration will be used.
+- `MAIL_RELAY_USER`: The user to authenticate in `MAIL_RELAY_HOST`.
+- `MAIL_RELAY_PASS`: The password to authenticate in `MAIL_RELAY_HOST`.
+- `MAIL_CANONICAL_DOMAINS`: A space-separated list of domains that are
+  considered [canonical][].
+- `MAIL_NON_CANONICAL_DEFAULT`: A domain that should be found in the list of
+  `MAIL_CANONICAL_DOMAINS`, which will be used as the replacement domain when
+  a non-[canonical][] message comes in. Leave it empty to skip that
+  replacement system.
+- `MAIL_CANONICAL_PREFIX`: Defaults to `noreply+`, and it is what will be
+  prefixed to replaced non-[canonical][] sender addresses.
 - `MESSAGE_SIZE_LIMIT` in bytes, defaults to 25MB, just like Gmail.
 
 ### Examples
@@ -41,3 +48,23 @@ Configure through these environment variables:
         -e MAIL_RELAY_USER='your_gmail_addr@gmail.com' \
         -e MAIL_RELAY_PASS='your_gmail_pass' \
         tecnativa/postfix-relay
+
+## FAQ
+
+### What Is A Canonical Domain
+
+It means "domains that are allowed to send from here".
+
+Suppose your app allows users to define their own emails, and that one is used
+to send emails to other users from the system.
+
+If you only own the `example.com` and `example.net` domains, but somebody
+configures his email as `pink@example.org`. If you send this email as it came,
+SPAM filters will block it.
+
+By defining `MAIL_CANONICAL_DOMAINS=example.com example.net` and
+`MAIL_NON_CANONICAL_DEFAULT=example.com`, the mail would be modified as if it
+came from `noreply+pink-example.org@example.com`, and SPAM filters will
+be happy with that.
+
+[canonical]: #what-is-a-canonical-domain
