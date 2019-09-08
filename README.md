@@ -37,6 +37,8 @@ Configure through these environment variables:
 - `MAIL_CANONICAL_PREFIX`: Defaults to `noreply+`, and it is what will be
   prefixed to replaced non-[canonical][] sender addresses.
 - `MESSAGE_SIZE_LIMIT` in bytes, defaults to 25MB, just like Gmail.
+- `ROUTE_CUSTOM` space separated list of subnets in the CIDR standard notation
+  (e.g 192.168.0.0/16).
 
 ### Examples
 
