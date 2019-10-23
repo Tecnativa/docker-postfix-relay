@@ -36,7 +36,11 @@ Configure through these environment variables:
   replacement system.
 - `MAIL_CANONICAL_PREFIX`: Defaults to `noreply+`, and it is what will be
   prefixed to replaced non-[canonical][] sender addresses.
-- `MESSAGE_SIZE_LIMIT` in bytes, defaults to 25MB, just like Gmail.
+- `MESSAGE_SIZE_LIMIT` in bytes, defaults to 50MiB. Most generous servers offer
+  a limit of 25iMB (Gmail, Mailgun...), so by defaulting to 50MiB, basically
+  we are forcing the remote server to fail in case of a big email, instead of
+  making the local relay to fail. Change at will if you prefer a different
+  behavior.
 - `ROUTE_CUSTOM` space separated list of subnets in the CIDR standard notation
   (e.g 192.168.0.0/16).
 
